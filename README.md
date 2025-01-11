@@ -1,3 +1,13 @@
+**Name:** MD SAMEER ANSARI
+
+**Company:** CODTECH IT SOLUTIONS
+
+**ID:** CT12WDS94
+
+**Domain:** Python Programming
+
+**Duration:** December to March 2024  
+
 # CODETECH---TASK-4 (Machine learning model implementation)
 
 To create a predictive model using Scikit-learn for classifying or predicting outcomes from a datasheet detection, let's go through the steps with an example. We'll assume you have a dataset with multiple features (columns) that are used to predict a target (class or continuous value).
