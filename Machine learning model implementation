@@ -1,1 +1,115 @@
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+import matplotlib.pyplot as plt
+
+# Load the example dataset (Hypothetical)
+# For this example, we'll create a synthetic dataset
+data = {
+    'Age': [25, 45, 35, 50, 23, 40, 36, 60, 33, 39],
+    'Income': [50000, 100000, 75000, 120000, 30000, 90000, 85000, 150000, 78000, 110000],
+    'Previous_Purchases': [2, 5, 4, 6, 1, 5, 4, 7, 3, 6],
+    'Purchased': [0, 1, 0, 1, 0, 1, 1, 1, 0, 1]  # 0 - No, 1 - Yes
+}
+
+# Convert the dictionary to a DataFrame
+df = pd.DataFrame(data)
+
+# Show the first few rows of the dataset
+df.head()
+
+
+# Features (independent variables)
+X = df[['Age', 'Income', 'Previous_Purchases']]
+
+# Target variable (dependent variable)
+y = df['Purchased']
+
+# Split the data into training and testing sets (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Standardize the features to have zero mean and unit variance (important for models like Logistic Regression)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+print("Data preprocessing complete!")
+
+
+# Initialize the Logistic Regression model
+log_reg = LogisticRegression(random_state=42)
+
+# Train the model on the training data
+log_reg.fit(X_train_scaled, y_train)
+
+# Predict on the test set
+y_pred_log_reg = log_reg.predict(X_test_scaled)
+
+# Evaluate the model performance
+accuracy_log_reg = accuracy_score(y_test, y_pred_log_reg)
+print(f"Logistic Regression Accuracy: {accuracy_log_reg:.4f}")
+
+
+# Confusion matrix
+cm = confusion_matrix(y_test, y_pred_log_reg)
+print("Confusion Matrix:")
+print(cm)
+
+# Classification report
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred_log_reg))
+
+# Plotting the confusion matrix
+fig, ax = plt.subplots(figsize=(6, 4))
+ax.matshow(cm, cmap='Blues')
+plt.title('Confusion Matrix', pad=20)
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.xticks([0, 1], ['No', 'Yes'])
+plt.yticks([0, 1], ['No', 'Yes'])
+plt.colorbar()
+plt.show()
+
+
+# Initialize the Random Forest Classifier
+rf_classifier = RandomForestClassifier(random_state=42)
+
+# Train the model on the training data
+rf_classifier.fit(X_train_scaled, y_train)
+
+# Predict on the test set
+y_pred_rf = rf_classifier.predict(X_test_scaled)
+
+# Evaluate the model performance
+accuracy_rf = accuracy_score(y_test, y_pred_rf)
+print(f"\nRandom Forest Classifier Accuracy: {accuracy_rf:.4f}")
+
+# Confusion matrix and classification report
+cm_rf = confusion_matrix(y_test, y_pred_rf)
+print("\nConfusion Matrix (Random Forest):")
+print(cm_rf)
+
+print("\nClassification Report (Random Forest):")
+print(classification_report(y_test, y_pred_rf))
+
+
+# Compare the accuracy of both models
+print("\nModel Comparison:")
+print(f"Logistic Regression Accuracy: {accuracy_log_reg:.4f}")
+print(f"Random Forest Accuracy: {accuracy_rf:.4f}")
+
+# We can also plot a bar chart to visualize the comparison
+models = ['Logistic Regression', 'Random Forest']
+accuracies = [accuracy_log_reg, accuracy_rf]
+
+plt.bar(models, accuracies, color=['blue', 'green'])
+plt.xlabel('Model')
+plt.ylabel('Accuracy')
+plt.title('Model Accuracy Comparison')
+plt.show()
 
