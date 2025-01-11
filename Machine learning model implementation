@@ -1,0 +1,60 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier  # Example of a model
+from sklearn.metrics import accuracy_score, confusion_matrix
+# Example: Load dataset (Assuming you have a CSV file)
+data = pd.read_csv('your_dataset.csv')
+
+# Split into features (X) and target (y)
+X = data.drop('target', axis=1)  # 'target' is the column we want to predict
+y = data['target']
+# Example: Fill missing values (if any)
+X = X.fillna(X.mean())
+
+# Scaling the features (important for some models like SVMs, Neural Networks, etc.)
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+# Initialize the model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Train the model
+model.fit(X_train, y_train)
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Evaluate the model using accuracy score
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy * 100:.2f}%")
+
+# Confusion matrix (for classification tasks)
+conf_matrix = confusion_matrix(y_test, y_pred)
+print("Confusion Matrix:")
+print(conf_matrix)
+from sklearn.model_selection import GridSearchCV
+
+# Example: Grid search for hyperparameter tuning
+param_grid = {'n_estimators': [100, 200], 'max_depth': [10, 20, None]}
+grid_search = GridSearchCV(RandomForestClassifier(random_state=42), param_grid, cv=5)
+grid_search.fit(X_train, y_train)
+
+# Best parameters
+print("Best parameters found:", grid_search.best_params_)
+import joblib
+
+# Save the trained model to a file
+joblib.dump(model, 'random_forest_model.pkl')
+
+# Load the saved model (if needed)
+loaded_model = joblib.load('random_forest_model.pkl')
+# Example new data point for prediction
+new_data = np.array([[1.5, 2.3, 3.1]])  # Ensure it has the correct shape
+
+# Apply the same scaling to the new data
+new_data_scaled = scaler.transform(new_data)
+
+# Make a prediction
+prediction = model.predict(new_data_scaled)
+print("Prediction:", prediction)
